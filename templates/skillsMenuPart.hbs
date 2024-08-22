@@ -1,0 +1,21 @@
+{{#each this as |value key|}}
+<div class="form-group">
+<div class="flexrow">
+    <div class="flexcol">
+<label for="{{key}}">Skill Key:</label>
+<input type="text" name="{{key}}" value="{{key}}"/>
+</div>
+<div class="flexcol">
+<label for="{{skill}}">Skill Name:</label>
+<input type="text" class="skill-value" name="{{key}}" value="{{value}}"/>
+</div>
+<a
+            class='item-control item-delete'
+            title='Delete Skill'
+            data-skill="{{key}}"
+          >
+            <i class='fas fa-trash'></i>
+          </a>
+</div>
+</div>
+{{/each}}

@@ -1,0 +1,44 @@
+
+<form class="flexcol">
+  <div class="skillslist flexcol">
+     <h2>Configure skills here!</h2>
+     <div class="working-list">
+{{#each this as |skill key|}}
+<div class="form-group">
+<div class="flexrow">
+    <div class="flexcol">
+<label for="{{key}}">Skill Key:</label>
+<input type="text" name="{{key}}" value="{{key}}"/>
+</div>
+<div class="flexcol">
+<label for="{{skill}}">Skill Name:</label>
+<input type="text" class="skill-value" name="{{key}}" value="{{skill}}"/>
+</div>
+<a
+            class='item-control item-delete'
+            title='Delete Skill'
+          data-skill="{{key}}">
+            <i class='fas fa-trash'></i>
+          </a>
+</div>
+</div>
+{{#if @last}}
+</div>
+<div class='skill-controls'>
+        <a
+          class='item-control item-create'
+          title='New Skill'
+        >
+          <i class='fas fa-plus'></i>
+          New Skill
+        </a>
+      </div>
+      {{/if}}
+{{/each}}
+<footer class="sheet-footer flexrow">
+    <button type="submit" name="submit">
+        <i class="fa fa-check"></i> OK
+    </button>
+  </footer>
+  </div>
+</form>
