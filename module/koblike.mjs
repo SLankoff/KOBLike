@@ -8,13 +8,14 @@ import { koblikeItemSheet } from './sheets/item-sheet.mjs';
 import { preloadHandlebarsTemplates } from './helpers/templates.mjs';
 import { KOBLIKE } from './helpers/config.mjs';
 import { skillsMenuClass } from './helpers/config.mjs';
+import { itemMenuClass } from './helpers/config.mjs';
 // Import DataModel classes
 import * as models from './data/_module.mjs';
 //Custom system logic classes
 import koblikeDie from './helpers/koblikedie.js';
 import { koblikeRoll } from './helpers/koblikedie.js';
 
-
+CONFIG.debug.hooks = true
 /* -------------------------------------------- */
 /*  Init Hook                                   */
 /* -------------------------------------------- */
@@ -36,7 +37,6 @@ Hooks.once('init', async function () {
     name: "Skills Submenu",
     hint: "Define the listed skills for use on the character sheet!",
     icon: "fas fa-bars",
-    requiresReload: true,
     type: skillsMenuClass,
     restricted: true
     
@@ -44,7 +44,6 @@ Hooks.once('init', async function () {
   await game.settings.register('koblike', 'skillsList', {
     scope: "world",
     config: false,
-    requiresReload: true,
     type: Object,
     default: { 
       bra: "Brains",
@@ -56,20 +55,26 @@ Hooks.once('init', async function () {
     
     }
   })
+    //Register item class settings
   await game.settings.register('koblike', 'itemTypes', {
     scope: "world",
     config: false,
     type: Object,
-    default: { features: {
-      strength: "Strengths",
-      weakness: "Weaknesses"
-    },
-    items: {
-      equipment: "Equipment"
-    },
+    //Objects are generally stronger in Foundry... But I'm using an array here because I generally think we'll always need these user input names when actually using categories.
+    default: { features: ['Strengths', 'Weaknesses'],
+    items: ["Equipment"],
     adversity: "Adversity"
     }
   })
+  game.settings.registerMenu("koblike", "itemMenu", {
+    name: "Items Submenu",
+    hint: "Define the types of items and equipment your system uses!",
+    icon: "fas fa-bars",
+    type: itemMenuClass,
+    restricted: true
+    
+  })
+  //Register setting for NSBU mode
   game.settings.register('koblike', 'explodeUpgrades', {
     name: "Explosive Upgrades",
     hint: "Upgrade your skill die type when rolling a maximum of that die! (Inspired by Never Stop Blowing Up)",
@@ -79,6 +84,16 @@ Hooks.once('init', async function () {
     default: false
 
   })
+    //Register setting for Adversity Token name
+    game.settings.register('koblike', 'adversity', {
+      name: "Adversity Token Name",
+      hint: "What are failure tokens called in your system?",
+      scope: "world",
+      config: true,
+      type: String,
+      default: "Adversity"
+  
+    })
 //Register fancy new dice class for exploding upgrades
 CONFIG.Dice.terms.d = koblikeDie
 CONFIG.Dice.rolls = [koblikeRoll]
@@ -86,6 +101,7 @@ CONFIG.Dice.rolls = [koblikeRoll]
 
   /**
    * Set an initiative formula for the system
+   * Liz Note: I wanna make a selector of some kind to bind a skill to inititive.
    * @type {String}
    */
   CONFIG.Combat.initiative = {
@@ -104,11 +120,11 @@ CONFIG.Dice.rolls = [koblikeRoll]
     npc: models.koblikeNPC
   }
   CONFIG.Item.documentClass = koblikeItem;
-  /*CONFIG.Item.dataModels = {
+  CONFIG.Item.dataModels = {
     item: models.koblikeItem,
-    feature: models.koblikeFeature,
-    spell: models.koblikeSpell
-  }*/
+    feature: models.koblikeFeature
+    //spell: models.koblikeSpell
+  }
 
   // Active Effects are never copied to the Actor,
   // but will still apply to the Actor from within the Item
@@ -126,6 +142,43 @@ CONFIG.Dice.rolls = [koblikeRoll]
     makeDefault: true,
     label: 'KOBLIKE.SheetLabels.Item',
   });
+
+  //Feels weird hooking here, but gonna try and add to the chat message context for success/failures.
+  Hooks.on('getChatLogEntryContext', (app, entries) => {
+    entries.push({
+      callback: (message)=> {let doc = game.messages.get(message.data().messageId)
+        doc.rolls.forEach(roll => {
+          roll.options.marked = 'success'
+        });
+        doc.update({rolls: doc.rolls, flags: {koblike: {marked: 'success'}}})
+      },
+      condition: game.user.isGM,
+      icon: '<i class="fa-solid fa-check"></i>',
+      name: 'Mark Success'
+    })
+    entries.push({
+      callback: (message)=> {let doc = game.messages.get(message.data().messageId)
+        doc.rolls.forEach(roll => {
+          roll.options.marked = 'failure'
+        });
+        doc.update({rolls: doc.rolls, flags: {koblike: {marked: 'failure'}}})
+      },
+      condition: game.user.isGM,
+      icon: '<i class="fa-solid fa-x"></i>',
+      name: 'Mark Failure'
+    })
+    entries.push({
+      callback: (message)=> {let doc = game.messages.get(message.data().messageId)
+        doc.rolls.forEach(roll => {
+          roll.options.marked = 'false'
+        });
+        doc.update({rolls: doc.rolls, flags: {koblike: {marked: 'false'}}})
+      },
+      condition: game.user.isGM,
+      icon: '<i class="fa-solid fa-question"></i>',
+      name: 'Mark Neutral'
+    })
+  })
 
   // Preload Handlebars templates.
   return preloadHandlebarsTemplates();
@@ -155,6 +208,26 @@ Handlebars.registerHelper('diePicker',  function (options) {
 /* -------------------------------------------- */
 
 Hooks.once('ready', function () {
+//Register Sucess/Fail button visibility and listeners...
+Hooks.on('renderChatMessage', (doc,element,options) => {
+  if (doc.author.id !== game.user.id && game.user.isGM && doc.isRoll && !doc.flags?.koblike?.marked) {
+    let content = `<div class="choice-buttons"><button data-type="success">Mark Success</button>
+    <button data-type="failure">Mark Failure</button></div>`
+    element.append(content)
+  }
+  element.find('[data-type="success"]').on('click', async ev => {
+    doc.rolls.forEach(roll => {
+      roll.options.marked = 'success'
+    });
+    doc.update({rolls: doc.rolls, flags: {koblike: {marked: 'success'}}})
+  })
+  element.find('[data-type="failure"]').on('click', async ev => {
+    doc.rolls.forEach(roll => {
+      roll.options.marked = 'failure'
+    });
+    doc.update({rolls: doc.rolls, flags: {koblike: {marked: 'failure'}}})
+  })
+})
   // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
   Hooks.on('hotbarDrop', (bar, data, slot) => createItemMacro(data, slot));
 

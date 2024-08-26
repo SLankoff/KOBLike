@@ -1,0 +1,72 @@
+
+<form class="flexcol">
+  <div class="skillslist flexcol">
+     <section class="grid grid-2col">
+            <div class="feature-container">
+              <h2>Feature Types:</h2>
+     <div class="working-list">
+{{#each features as |item key|}}
+<div class="form-group" data-feature-index="{{@index}}">
+<div class="flexcol">
+<label for="features">Name:</label>
+<input type="text" class="feature-value" name="features" data-feature-index="{{@index}}" value="{{item}}"/>
+</div>
+<a
+            class='item-control feature-delete'
+            title='Delete Feature'
+          data-feature-index="{{@index}}">
+            <i class='fas fa-trash'></i>
+          </a>
+</div>
+{{#if @last}}
+</div>
+<div class='feature-controls'>
+        <a
+          class='item-control feature-create'
+          title='New Feature'
+        >
+          <i class='fas fa-plus'></i>
+          New Feature
+        </a>
+      </div>
+      {{/if}}
+      {{/each}}
+      </div>
+<div class="item-container">
+<h2>Item Types:</h2>
+<div class="working-list2">
+{{#each items as |item key|}}
+<div class="form-group" data-item-index="{{@index}}">
+<div class="flexcol">
+<label for="items">Name:</label>
+<input type="text" class="item-value" data-item-index="{{@index}}" name="items" value="{{item}}"/>
+</div>
+<a
+            class='item-control item-delete'
+            title='Delete item'
+          data-item-index="{{@index}}">
+            <i class='fas fa-trash'></i>
+          </a>
+</div>
+{{#if @last}}
+</div>
+<div class='item-controls'>
+        <a
+          class='item-control item-create'
+          title='New item'
+        >
+          <i class='fas fa-plus'></i>
+          New item
+        </a>
+      </div>
+      {{/if}}
+{{/each}}
+</div>
+</section>
+<footer class="sheet-footer flexrow">
+    <button type="submit" name="submit">
+        <i class="fa fa-check"></i> OK
+    </button>
+  </footer>
+  </div>
+</form>

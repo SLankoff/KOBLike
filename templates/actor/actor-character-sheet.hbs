@@ -21,7 +21,7 @@
         </div>
 
         <div class="resource flex-group-center">
-          <label for="system.adversity.value" class="resource-label">{{config.items.adversity}}</label>
+          <label for="system.adversity.value" class="resource-label">{{config.adversity}}</label>
           <div class="resource-content flexrow flex-center flex-between">
           <input type="text" name="system.adversity.value" value="{{system.adversity.value}}" data-dtype="Number"/>
           </div>
@@ -42,9 +42,9 @@
   <nav class="sheet-tabs tabs" data-group="primary">
     {{!-- Default tab is specified in actor-sheet.mjs --}}
     <a class="item" data-tab="features">Features</a>
-    <a class="item" data-tab="description">Description</a>
-    <a class="item" data-tab="items">Items</a>
-    <a class="item" data-tab="spells">Spells</a>
+   <a class="item" data-tab="items">Items</a>
+   {{!-- <a class="item" data-tab="spells">items</a> --}}
+   <a class="item" data-tab="description">Biography</a>
     <a class="item" data-tab="effects">Effects</a>
   </nav>
 
@@ -109,11 +109,11 @@
        {{> "systems/koblike/templates/actor/parts/actor-items.hbs"}}
     </div>
 
-    {{!-- Owned Spells Tab --}}
+    {{!-- Owned Spells Tab 
     <div class="tab spells" data-group="primary" data-tab="spells">
       {{> "systems/koblike/templates/actor/parts/actor-spells.hbs"}}
     </div>
-
+--}}
     {{!-- Active Effects Tab --}}
     <div class="tab effects flexcol" data-group="primary" data-tab="effects">
       {{> "systems/koblike/templates/actor/parts/actor-effects.hbs"}}

@@ -41,6 +41,14 @@ export class koblikeItemSheet extends ItemSheet {
   getData() {
     // Retrieve base data structure.
     const context = super.getData();
+    context.itemTypes = {features: {}, items: {}}
+    //Add config context to item
+    game.settings.get('koblike','itemTypes').features.forEach(item => {
+      context.itemTypes.features[item] = item
+    });
+    game.settings.get('koblike','itemTypes').items.forEach(item => {
+      context.itemTypes.items[item] = item
+    });
 
     // Use a safe clone of the item data for further operations.
     const itemData = context.data;

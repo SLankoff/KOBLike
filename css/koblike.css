@@ -364,3 +364,11 @@
 .koblike .effects .item .effect-controls {
   border: none;
 }
+.chat-message .dice-roll .dice-total.success {
+  color: rgb(0, 170, 0);
+}
+.chat-message .dice-roll .dice-total.failure {
+  color: rgb(255, 0, 0);
+}
+
+

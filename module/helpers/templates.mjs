@@ -8,7 +8,7 @@ export const preloadHandlebarsTemplates = async function () {
     // Actor partials.
     'systems/koblike/templates/actor/parts/actor-features.hbs',
     'systems/koblike/templates/actor/parts/actor-items.hbs',
-    'systems/koblike/templates/actor/parts/actor-spells.hbs',
+    //'systems/koblike/templates/actor/parts/actor-spells.hbs',
     'systems/koblike/templates/actor/parts/actor-effects.hbs',
     // Item partials
     'systems/koblike/templates/item/parts/item-effects.hbs',

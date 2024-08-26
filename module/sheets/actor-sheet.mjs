@@ -45,6 +45,7 @@ export class koblikeActorSheet extends ActorSheet {
     context.config = {
       skills: game.settings.get('koblike', 'skillsList'),
       items: game.settings.get('koblike', 'itemTypes'),
+      adversity: game.settings.get('koblike', 'adversity'),
       levels: KOBLIKE.skillLevels
     }
 
@@ -99,9 +100,17 @@ export class koblikeActorSheet extends ActorSheet {
    */
   _prepareItems(context) {
     // Initialize containers.
-    const gear = [];
-    const features = [];
-    const spells = {
+    const gear = {}
+    game.settings.get('koblike','itemTypes').items.forEach(type => {
+      gear[type] = []
+      
+    });
+    const features = {};
+    game.settings.get('koblike','itemTypes').features.forEach(type => {
+      features[type] = []
+      
+    });
+   /* const spells = {
       0: [],
       1: [],
       2: [],
@@ -112,31 +121,32 @@ export class koblikeActorSheet extends ActorSheet {
       7: [],
       8: [],
       9: [],
-    };
+      12: [],
+    };*/
 
     // Iterate through items, allocating to containers
     for (let i of context.items) {
       i.img = i.img || Item.DEFAULT_ICON;
       // Append to gear.
       if (i.type === 'item') {
-        gear.push(i);
+        gear[i.system.subType].push(i)
       }
       // Append to features.
       else if (i.type === 'feature') {
-        features.push(i);
+        features[i.system.subType].push(i)
       }
       // Append to spells.
-      else if (i.type === 'spell') {
+      /*else if (i.type === 'spell') {
         if (i.system.spellLevel != undefined) {
           spells[i.system.spellLevel].push(i);
         }
-      }
+      }*/
     }
 
     // Assign and return
     context.gear = gear;
     context.features = features;
-    context.spells = spells;
+    //context.spells = spells;
   }
 
   /* -------------------------------------------- */

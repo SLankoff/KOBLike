@@ -1,4 +1,10 @@
 <form class="{{cssClass}}" autocomplete="off">
+      <div class="itemtype resource-label flex-group-right">
+    <p>{{localize (concat 'TYPES.Item.' item.type)}}</p>
+  </div>
+  <div class="itemtype subtype resource-label flex-group-right">
+    <p>{{item.system.subType}}</p>
+  </div>
   <header class="sheet-header">
     <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
     <div class="header-fields">
@@ -36,6 +42,14 @@
     {{!-- Attributes Tab --}}
     <div class="tab attributes" data-group="primary" data-tab="attributes">
       {{!-- As you add new fields, add them in here! --}}
+          <div class="tab attributes" data-group="primary" data-tab="attributes">
+            <div class="resource flexrow">
+        <label class="resource-label">Item Type</label>
+             <select name="system.subType">
+    {{selectOptions itemTypes.items selected=item.system.subType }}
+    </select>
+    
+      </div>
       <div class="resource">
         <label class="resource-label">Roll Formula:</label>
         <span>{{system.formula}}</span>
@@ -58,5 +72,3 @@
     </div>
   </section>
 </form>
-
-{{log system}}

@@ -67,6 +67,7 @@ export default class koblikeDie extends Die {
 }
 
 export class koblikeRoll extends Roll {
+  static CHAT_TEMPLATE = "systems/koblike/templates/roll.html";
   async _evaluate(options={}) {
     // If the user has configured alternative dice fulfillment methods, prompt for the first pass of fulfillment here.
     let resolver;
@@ -86,7 +87,18 @@ export class koblikeRoll extends Roll {
     resolver?.close();
     return this;
   }
- 
+  async render({flavor, template=this.constructor.CHAT_TEMPLATE, isPrivate=false}={}) {
+    if ( !this._evaluated ) await this.evaluate({allowInteractive: !isPrivate});
+    const chatData = {
+      formula: isPrivate ? "???" : this._formula,
+      flavor: isPrivate ? null : flavor ?? this.options.flavor,
+      user: game.user.id,
+      marked: !this.options.marked? false : this.options.marked,
+      tooltip: isPrivate ? "" : await this.getTooltip(),
+      total: isPrivate ? "?" : Math.round(this.total * 100) / 100
+    };
+    return renderTemplate(template, chatData);
+  }
     
 
 }

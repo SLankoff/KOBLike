@@ -1,0 +1,38 @@
+{{#if features}}
+{{#each this as |value key|}}
+<div class="form-group" data-feature-index="{{@index}}">
+<div class="flexrow">
+<div class="flexcol">
+<label for="features">Name:</label>
+<input type="text" class="feature-value" data-feature-index="{{@index}}" name="features" value="{{value}}"/>
+</div>
+<a
+            class='item-control feature-delete'
+            title='Delete Feature'
+            data-feature-index="{{@index}}"
+          >
+            <i class='fas fa-trash'></i>
+          </a>
+</div>
+
+</div>
+{{/each}}
+
+{{else}}
+{{#each this as |value key|}}
+<div class="form-group" data-item-index="{{@index}}">
+<div class="flexrow">
+<div class="flexcol">
+<label for="features">Name:</label>
+<input type="text" class="item-value" data-item-index="{{@index}}" name="items" value="{{value}}"/>
+</div>
+<a
+            class='item-control item-delete'
+            title='Delete Item'
+            data-item-index="{{@index}}"
+          >
+            <i class='fas fa-trash'></i>
+          </a>
+</div>
+{{/each}}
+{{/if}}
