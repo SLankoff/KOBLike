@@ -1,16 +1,16 @@
 {
   "id": "koblike",
   "title": "KOB Like Engine",
-  "description": "The KOB Like Engine system for FoundryVTT!",
+  "description": "WIP Build your own KOB-Like system for Foundry v12.",
   "authors": [
     {
       "name": "Liz"
     }
   ],
-  "url": "Replace this with a link to your public repository",
+  "url": "",
   "license": "LICENSE.txt",
   "readme": "README.md",
-  "bugs": "Replace this with a link to file issues or tickets",
+  "bugs": "",
   "changelog": "CHANGELOG.md",
   "media": [
     {
@@ -19,7 +19,7 @@
       "thumbnail": "systems/koblike/assets/anvil-impact.png"
     }
   ],
-  "version": "0",
+  "version": "0.1",
   "compatibility": {
     "minimum": 12,
     "verified": "12.330"
@@ -39,8 +39,6 @@
   "manifest": "Replace this with a link to the /latest release system.json so people can receive updates after they've installed the system",
   "download": "This must link to a .zip file of the current version",
   "background": "systems/koblike/assets/anvil-impact.png",
-  "gridDistance": 5,
-  "gridUnits": "ft",
-  "primaryTokenAttribute": "health",
-  "secondaryTokenAttribute": "power"
+  "grid.distance": 5,
+  "grid.units": "ft"
 }

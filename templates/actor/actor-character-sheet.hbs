@@ -73,7 +73,7 @@
             {{#each system.skills as |skill key|}}
             
             <div class="skill flexrow flex-group-center">
-              <label for="system.skills.{{key}}.value" class="resource-label rollable flexlarge align-left" data-roll="{{key}}" data-label="{{lookup ../config.skills key }}">{{lookup ../config.skills key }}</label>
+              <label for="system.skills.{{key}}.value" class="resource-label rollable flexlarge align-left" data-roll="{{key}}" title="{{lookup ../config.skills key }}" data-label="{{lookup ../config.skills key }}">{{lookup ../config.skills key }}</label>
               {{diePicker name=(concat "system.skills." key ".value" ) value=skill.value min=1 max=6 step=1}}
               <div class='item-image'>
             <a class='rollable' data-roll="{{key}}" data-label="{{lookup ../config.skills key }}"><img

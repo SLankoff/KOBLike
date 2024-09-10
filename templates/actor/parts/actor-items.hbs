@@ -1,4 +1,4 @@
-{{log this}}
+
 <ol class='items-list'>
   {{#each gear as |items key|}}
     <li class='item flexrow items-header'>
@@ -10,6 +10,7 @@
           class='item-control item-create'
           title='New {{key}}'
           data-type='{{key}}'
+          data-base='item'
         >
           <i class='fas fa-plus'></i>
           New {{key}}
@@ -17,6 +18,7 @@
       </div>
     </li>
     {{#each items as |item id|}}
+    <div class="item-block flexcol">
       <li class='item flexrow' data-item-id='{{item._id}}'>
         <div class='item-name flexrow'>
           <div class='item-image'>
@@ -44,6 +46,7 @@
           </a>
         </div>
       </li>
+      </div>
     {{/each}}
   {{/each}}
 </ol>

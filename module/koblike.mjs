@@ -15,7 +15,6 @@ import * as models from './data/_module.mjs';
 import koblikeDie from './helpers/koblikedie.js';
 import { koblikeRoll } from './helpers/koblikedie.js';
 
-CONFIG.debug.hooks = true
 /* -------------------------------------------- */
 /*  Init Hook                                   */
 /* -------------------------------------------- */
@@ -62,8 +61,7 @@ Hooks.once('init', async function () {
     type: Object,
     //Objects are generally stronger in Foundry... But I'm using an array here because I generally think we'll always need these user input names when actually using categories.
     default: { features: ['Strengths', 'Weaknesses'],
-    items: ["Equipment"],
-    adversity: "Adversity"
+    items: ["Equipment"]
     }
   })
   game.settings.registerMenu("koblike", "itemMenu", {
@@ -94,6 +92,24 @@ Hooks.once('init', async function () {
       default: "Adversity"
   
     })
+
+    //Register an initiative choice
+    //First, create an object for the choices
+    let skillchoices ={} 
+    for (let key in game.settings.get('koblike', 'skillsList')) { 
+      skillchoices[key] = game.settings.get('koblike', 'skillsList')[key]
+    }
+    //Ok now do it
+    game.settings.register('koblike', 'initiative', {
+      name: "Initiative Skill",
+      hint: "What skill should factor in for Initiative rolls?",
+      scope: "world",
+      requiresReload: true,
+      config: true,
+      default: Object.keys(game.settings.get('koblike', 'skillsList'))[0] ,
+      type: String,
+      choices: skillchoices
+    })
 //Register fancy new dice class for exploding upgrades
 CONFIG.Dice.terms.d = koblikeDie
 CONFIG.Dice.rolls = [koblikeRoll]
@@ -104,10 +120,19 @@ CONFIG.Dice.rolls = [koblikeRoll]
    * Liz Note: I wanna make a selector of some kind to bind a skill to inititive.
    * @type {String}
    */
+  if (game.settings.get('koblike', 'skillsList')[game.settings.get('koblike', 'initiative')]) {
   CONFIG.Combat.initiative = {
-    formula: '1d20 + @abilities.dex.mod',
+    formula: `@${game.settings.get('koblike', 'initiative')}`,
     decimals: 2,
   };
+}
+else {
+  CONFIG.Combat.initiative = {
+    formula: `@${Object.keys(game.settings.get('koblike', 'skillsList'))[0]}`,
+    decimals: 2,
+  };
+}
+
 
   // Define custom Document and DataModel classes
   CONFIG.Actor.documentClass = koblikeActor;
@@ -210,8 +235,9 @@ Handlebars.registerHelper('diePicker',  function (options) {
 Hooks.once('ready', function () {
 //Register Sucess/Fail button visibility and listeners...
 Hooks.on('renderChatMessage', (doc,element,options) => {
-  if (doc.author.id !== game.user.id && game.user.isGM && doc.isRoll && !doc.flags?.koblike?.marked) {
+  if (doc.author.id !== game.user.id && game.user.isGM && doc.isRoll && !doc.flags?.koblike?.marked && !doc.flags.core?.initiativeRoll) {
     let content = `<div class="choice-buttons"><button data-type="success">Mark Success</button>
+    <button data-type="false">Mark Neutral</button>
     <button data-type="failure">Mark Failure</button></div>`
     element.append(content)
   }
@@ -227,7 +253,20 @@ Hooks.on('renderChatMessage', (doc,element,options) => {
     });
     doc.update({rolls: doc.rolls, flags: {koblike: {marked: 'failure'}}})
   })
+  element.find('[data-type="false"]').on('click', async ev => {
+    doc.rolls.forEach(roll => {
+      roll.options.marked = 'false'
+    });
+    doc.update({rolls: doc.rolls, flags: {koblike: {marked: 'false'}}})
+  })
 })
+//Replace initiative roll flavor in a hacky way
+Hooks.on('preCreateChatMessage', (doc) => {
+  if (doc.flags?.core?.initiativeRoll) {
+    doc.updateSource({flavor: `<b>Initiative</b> Skill Check - ${game.settings.get('koblike', 'skillsList')[game.settings.get('koblike', 'initiative')]}`})
+  }
+})
+
   // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
   Hooks.on('hotbarDrop', (bar, data, slot) => createItemMacro(data, slot));
 

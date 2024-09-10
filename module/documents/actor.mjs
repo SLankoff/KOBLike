@@ -39,7 +39,8 @@ export class koblikeActor extends Actor {
    * but have slightly different data preparation needs.
    */
   getRollData() {
-    return { ...super.getRollData(), ...this.system.getRollData?.() ?? null };
+    return { ...this.system.getRollData?.() ?? null };
+    //Blanking this out for now, as my usage of this is primitive in scope
   }
 
 }

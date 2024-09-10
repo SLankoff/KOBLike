@@ -9,6 +9,7 @@ import { KOBLIKE } from '../helpers/config.mjs';
  */
 export class koblikeActorSheet extends ActorSheet {
   /** @override */
+  _expanded = new Set();
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ['koblike', 'sheet', 'actor'],
@@ -174,11 +175,17 @@ export class koblikeActorSheet extends ActorSheet {
     html.on('click', '.item-create', this._onItemCreate.bind(this));
 
     // Delete Inventory Item
-    html.on('click', '.item-delete', (ev) => {
+    html.on('click', '.item-delete', async (ev) => {
       const li = $(ev.currentTarget).parents('.item');
       const item = this.actor.items.get(li.data('itemId'));
+      let d1 = await Dialog.confirm({
+        title: "Confirm Deletion",
+        content: `Are you sure you'd like to delete ${item.name}?`
+      })
+      if (d1) {
       item.delete();
       li.slideUp(200, () => this.render(false));
+      }
     });
 
     // Active Effect management
@@ -190,9 +197,11 @@ export class koblikeActorSheet extends ActorSheet {
           : this.actor.items.get(row.dataset.parentId);
       onManageActiveEffect(ev, document);
     });
-
-    // Rollable abilities.
+    //Expandable descriptions
+    html.find('.item-name').click(this._toggleExpand.bind(this));
+    // Rollable abilities. NEEDS OVERHAUL
     html.on('click', '.rollable', this._onRoll.bind(this));
+
 
     // Drag events for macros.
     if (this.actor.isOwner) {
@@ -214,23 +223,42 @@ export class koblikeActorSheet extends ActorSheet {
     event.preventDefault();
     const header = event.currentTarget;
     // Get the type of item to create.
-    const type = header.dataset.type;
+    const subType = header.dataset.type;
+    const type = header.dataset.base;
     // Grab any data associated with this control.
     const data = duplicate(header.dataset);
     // Initialize a default name.
-    const name = `New ${type.capitalize()}`;
+    const name = `New ${subType}`;
     // Prepare the item object.
     const itemData = {
       name: name,
       type: type,
-      system: data,
+      system: {subType: subType},
     };
     // Remove the type from the dataset since it's in the itemData.type prop.
-    delete itemData.system['type'];
+    //delete itemData.system['type'];
 
     // Finally, create the item!
     return await Item.create(itemData, { parent: this.actor });
   }
+//Expand event for descriptions of items and features
+async _toggleExpand(event) {
+  event.preventDefault();
+  let li = $(event.currentTarget).parents('.item')
+  let item = this.actor.items.get(li.data('itemId'))
+  if (li.hasClass('expanded') ) {
+    let descblock = li.siblings('.descblock');
+    descblock.slideUp(200, () => descblock.remove())
+    this._expanded.delete(item.id);
+  } else {
+    let descblock = $(await renderTemplate('systems/koblike/templates/actor/parts/item-description.hbs', item.toObject()))
+    li.parent().append(descblock.hide());
+    descblock.slideDown(200);
+    this._expanded.add(item.id)
+  }
+  li.toggleClass('expanded')
+  }
+
 //Do math
 _checkMath(event) {
   const input = event.target;

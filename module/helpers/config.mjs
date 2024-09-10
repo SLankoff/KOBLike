@@ -88,7 +88,7 @@ export class skillsMenuClass extends FormApplication {
       pushed[match] = formData[key][1]
     }
     game.settings.set('koblike', 'skillsList', pushed)
-    SettingsConfig.reloadConfirm({world:true})
+    SettingsConfig.reloadConfirm({world:true}) 
   }
 }
 export class itemMenuClass extends FormApplication {

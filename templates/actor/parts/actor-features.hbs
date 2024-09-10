@@ -1,13 +1,14 @@
-{{log features}}
+
 <ol class='items-list'>
   {{#each features as |array key|}}
   <li class='item flexrow items-header'>
-    <div class='item-name'>{{key}}</div>
+    <div class='item-name type-header'>{{key}}</div>
     <div class='item-controls'>
       <a
         class='item-control item-create'
         title='Create item'
         data-type='{{key}}'
+        data-base='feature'
       >
         <i class='fas fa-plus'></i>
         Add {{key}}
@@ -15,9 +16,9 @@
     </div>
   </li>
   {{#each array as |item id|}}
-  {{log item}}
+  <div class="item-block flexcol">
     <li class='item flexrow' data-item-id='{{item._id}}'>
-      <div class='item-name flexrow'>
+      <div class='item-name inline-name flexrow'>
         <div class='item-image'>
           <a class='rollable' data-roll-type='item'>
             <img
@@ -45,6 +46,7 @@
         </a>
       </div>
     </li>
+    </div>
   {{/each}}
   {{/each}}
 </ol>
