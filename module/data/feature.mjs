@@ -6,7 +6,7 @@ export default class koblikeFeature extends koblikeItemBase {
         const fields = foundry.data.fields;
         const schema = super.defineSchema();
     
-        schema.subType = new fields.StringField({ required: true, blank: false, initial:game.settings.get('koblike', 'itemTypes').features[0], choices: game.settings.get('koblike', 'itemTypes').features})
+        //schema.subType = new fields.StringField({ required: true, blank: false, initial:game.settings.get('koblike', 'itemTypes').features[0], choices: game.settings.get('koblike', 'itemTypes').features})
     
         return schema;
       }

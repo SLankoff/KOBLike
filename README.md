@@ -5,10 +5,9 @@
 This system is a Build your own KOB-Like sytem. I'm working on it.
 
 To-Do:
-Fix active effect references (add a @bonus)
 More Biography stuff
-Feature/Item Chat Card
 Do...Something with item/feature properties
 Automated Adversity on Realtime messages (toggleable)
 Stretch: Configurable dice scale menu
+Hooks on card shows
 Iron out stuff I did badly (exploding dice?)

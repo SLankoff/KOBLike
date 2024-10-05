@@ -63,24 +63,7 @@
  <div class="tab features" data-group="primary" data-tab="features">
       <section class="grid grid-3col">
         <aside class="sidebar">
-          <div class="skills flexcol">
-            {{#each system.skills as |skill key|}}
-            
-            <div class="skill flexrow flex-group-center">
-              <label for="system.skills.{{key}}.value" class="resource-label rollable flexlarge align-left" data-roll="{{key}}" title="{{lookup ../config.skills key }}" data-label="{{lookup ../config.skills key }}">{{lookup ../config.skills key }}</label>
-              {{diePicker name=(concat "system.skills." key ".value" ) value=skill.value min=1 max=6 step=1}}
-              <div class='item-image'>
-            <a class='rollable' data-roll="{{key}}" data-label="{{lookup ../config.skills key }}"><img
-               src='systems/koblike/assets/icons/{{lookup ../config.levels skill.value}}.svg'
-                title='{{lookup ../config.levels skill.value}}'
-                width='30'
-                height='30'
-              /></a>
-          </div>
-              
-            </div>
-            {{/each}}
-          </div>
+{{> "systems/koblike/templates/actor/parts/actor-skills.hbs"}}
         </aside>
         
         {{!-- For the main features list, span the right two columns --}}

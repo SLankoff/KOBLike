@@ -165,9 +165,9 @@ export class itemMenuClass extends FormApplication {
       }
     }
     //Something was blank (probably). Restore previous setting
-    if (!formData.features || !formData.items) {
-      ui.notifications.warn('Cannot have blank feature or item data, defaulting to previous...')
-      !formData.features? formData['features'] = game.settings.get('koblike', 'itemTypes').features : formData['items'] = game.settings.get('koblike', 'itemTypes').items
+    if (!formData.items) {
+      ui.notifications.warn('Cannot have blank item data, defaulting to previous...')
+      formData['items'] = game.settings.get('koblike', 'itemTypes').items
 
     }
     console.log(event,formData)

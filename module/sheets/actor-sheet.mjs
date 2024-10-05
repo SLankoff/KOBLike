@@ -2,6 +2,7 @@ import {
   onManageActiveEffect,
   prepareActiveEffectCategories,
 } from '../helpers/effects.mjs';
+import { colorMenuClass } from '../helpers/colorsapp.mjs';
 import { KOBLIKE } from '../helpers/config.mjs';
 /**
  * Extend the basic ActorSheet with some very simple modifications
@@ -11,8 +12,9 @@ export class koblikeActorSheet extends ActorSheet {
   /** @override */
   _expanded = new Set();
   static get defaultOptions() {
+    let theme = game.settings.get('koblike', 'theme')
     return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: ['koblike', 'sheet', 'actor'],
+      classes: ['koblike', 'sheet', 'actor', theme],
       width: 600,
       height: 600,
       tabs: [
@@ -45,6 +47,7 @@ export class koblikeActorSheet extends ActorSheet {
     // Push system setting data to context
     context.config = {
       skills: game.settings.get('koblike', 'skillsList'),
+      initiative: game.settings.get('koblike', 'initiative'),
       items: game.settings.get('koblike', 'itemTypes'),
       adversity: game.settings.get('koblike', 'adversity'),
       levels: KOBLIKE.skillLevels
@@ -106,24 +109,11 @@ export class koblikeActorSheet extends ActorSheet {
       gear[type] = []
       
     });
-    const features = {};
+    /*const features = {};
     game.settings.get('koblike','itemTypes').features.forEach(type => {
       features[type] = []
       
-    });
-   /* const spells = {
-      0: [],
-      1: [],
-      2: [],
-      3: [],
-      4: [],
-      5: [],
-      6: [],
-      7: [],
-      8: [],
-      9: [],
-      12: [],
-    };*/
+    });*/
 
     // Iterate through items, allocating to containers
     for (let i of context.items) {
@@ -133,20 +123,14 @@ export class koblikeActorSheet extends ActorSheet {
         gear[i.system.subType].push(i)
       }
       // Append to features.
-      else if (i.type === 'feature') {
+      /*else if (i.type === 'feature') {
         features[i.system.subType].push(i)
-      }
-      // Append to spells.
-      /*else if (i.type === 'spell') {
-        if (i.system.spellLevel != undefined) {
-          spells[i.system.spellLevel].push(i);
-        }
       }*/
     }
 
     // Assign and return
     context.gear = gear;
-    context.features = features;
+    //context.features = features;
     //context.spells = spells;
   }
 
@@ -170,6 +154,12 @@ export class koblikeActorSheet extends ActorSheet {
     // -------------------------------------------------------------
     // Everything below here is only needed if the sheet is editable
     if (!this.isEditable) return;
+
+     // Player-side Skill Color menu
+     html.on('click', '.config-skills', async (ev) => {
+      let theme = game.settings.get('koblike', 'theme')
+   new colorMenuClass(this.actor).render(true)
+     })
 
     // Add Inventory Item
     html.on('click', '.item-create', this._onItemCreate.bind(this));
@@ -197,9 +187,11 @@ export class koblikeActorSheet extends ActorSheet {
           : this.actor.items.get(row.dataset.parentId);
       onManageActiveEffect(ev, document);
     });
-    //Expandable descriptions
-    html.find('.item-name').click(this._toggleExpand.bind(this));
-    // Rollable abilities. NEEDS OVERHAUL
+   //Item Cards
+    html.find('.item-image').click(this._showCard.bind(this));
+   //Expandable descriptions
+    html.find('.name-block').click(this._toggleExpand.bind(this));
+    // Rollable abilities. NEEDS OVERHAUL -- pretty sure i did tho...
     html.on('click', '.rollable', this._onRoll.bind(this));
 
 
@@ -259,6 +251,14 @@ async _toggleExpand(event) {
   li.toggleClass('expanded')
   }
 
+  //Item chat cards!
+  async _showCard(event) {
+    event.preventDefault();
+    let li = $(event.currentTarget).parents('.item')
+    let item = this.actor.items.get(li.data('itemId'))
+    return item.showCard()
+  }
+
 //Do math
 _checkMath(event) {
   const input = event.target;
@@ -289,29 +289,9 @@ _checkMath(event) {
       }
     } */
 
-    // Handle rolls that supply the formula directly.
-   /* if (dataset.roll) {
-      let label = dataset.label ? `[ability] ${dataset.label}` : '';
-      let roll = new Roll(dataset.roll, this.actor.getRollData());
-      roll.toMessage({
-        speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-        flavor: label,
-        rollMode: game.settings.get('core', 'rollMode'),
-      });
-      return roll;
-    }*/
    //Actually do real skill rolls
    if (dataset.roll && this.actor.system?.skills[dataset.roll]) {
-    let label = dataset.label ? `Skill Check - ${dataset.label}` : 'Skill Check'
-    let n = this.actor.system.skills[dataset.roll].value
-    let formula = KOBLIKE.skillLevels[n]
-    let roll = Roll.create(`${formula}x`, this.actor.getRollData())
-    roll.toMessage({
-      speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-      flavor: label,
-      rollMode: game.settings.get('core', 'rollMode'),
-    });
-return roll
+    this.actor.rollSkill(dataset.roll)
    }
   }
 }

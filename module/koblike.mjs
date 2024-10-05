@@ -55,13 +55,14 @@ Hooks.once('init', async function () {
     }
   })
     //Register item class settings
+    //Liz, later, note: Rework items into a single list
   await game.settings.register('koblike', 'itemTypes', {
     scope: "world",
     config: false,
     type: Object,
     //Objects are generally stronger in Foundry... But I'm using an array here because I generally think we'll always need these user input names when actually using categories.
-    default: { features: ['Strengths', 'Weaknesses'],
-    items: ["Equipment"]
+    default: { 
+  items: ["Strengths", "Weaknesses", "Equipment"]
     }
   })
   game.settings.registerMenu("koblike", "itemMenu", {
@@ -110,25 +111,41 @@ Hooks.once('init', async function () {
       type: String,
       choices: skillchoices
     })
+
+    //Theme selector!
+    //ApplicationV2 who?
+    game.settings.register('koblike', 'theme', {
+      name: "Theme Choice",
+      hint: "Which theme should your game have?",
+      scope: "client",
+      requiresReload: false,
+      config: true,
+      default: 'default' ,
+      type: String,
+      choices: {
+        default: 'Default',
+        kobdark: 'Dark'
+      }
+    })
 //Register fancy new dice class for exploding upgrades
 CONFIG.Dice.terms.d = koblikeDie
 CONFIG.Dice.rolls = [koblikeRoll]
 
 
   /**
-   * Set an initiative formula for the system
-   * Liz Note: I wanna make a selector of some kind to bind a skill to inititive.
+   * Set an initiative skill for the system
+   * Defaults to the first on the list if any shenanigans are afoot.
    * @type {String}
    */
   if (game.settings.get('koblike', 'skillsList')[game.settings.get('koblike', 'initiative')]) {
   CONFIG.Combat.initiative = {
-    formula: `@${game.settings.get('koblike', 'initiative')}`,
+    formula: `@${game.settings.get('koblike', 'initiative')}.value + @${game.settings.get('koblike', 'initiative')}.bonus`,
     decimals: 2,
   };
 }
 else {
   CONFIG.Combat.initiative = {
-    formula: `@${Object.keys(game.settings.get('koblike', 'skillsList'))[0]}`,
+    formula: `@${Object.keys(game.settings.get('koblike', 'skillsList'))[0]}.value + @${Object.keys(game.settings.get('koblike', 'skillsList'))[0]}.bonus`,
     decimals: 2,
   };
 }
@@ -147,7 +164,7 @@ else {
   CONFIG.Item.documentClass = koblikeItem;
   CONFIG.Item.dataModels = {
     item: models.koblikeItem,
-    feature: models.koblikeFeature
+    //feature: models.koblikeFeature
     //spell: models.koblikeSpell
   }
 

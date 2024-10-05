@@ -10,8 +10,9 @@ import {
 export class koblikeItemSheet extends ItemSheet {
   /** @override */
   static get defaultOptions() {
+    let theme = game.settings.get('koblike', 'theme')
     return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: ['koblike', 'sheet', 'item'],
+      classes: ['koblike', 'sheet', 'item', theme],
       width: 520,
       height: 480,
       tabs: [
@@ -41,11 +42,8 @@ export class koblikeItemSheet extends ItemSheet {
   getData() {
     // Retrieve base data structure.
     const context = super.getData();
-    context.itemTypes = {features: {}, items: {}}
+    context.itemTypes = {items: {}}
     //Add config context to item
-    game.settings.get('koblike','itemTypes').features.forEach(item => {
-      context.itemTypes.features[item] = item
-    });
     game.settings.get('koblike','itemTypes').items.forEach(item => {
       context.itemTypes.items[item] = item
     });

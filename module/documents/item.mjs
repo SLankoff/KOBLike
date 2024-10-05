@@ -34,6 +34,16 @@ export class koblikeItem extends Item {
    * @param {Event} event   The originating click event
    * @private
    */
+  async showCard (){
+    let parent = this.parent? this.parent:false
+    let data = {
+      content: await renderTemplate('systems/koblike/templates/item/item-card.hbs', {item: this}), 
+      speaker:parent?getDocumentClass('ChatMessage').getSpeaker({actor:parent}):getDocumentClass('ChatMessage').getSpeaker(game.user),
+    }
+    getDocumentClass('ChatMessage').applyRollMode(data, "roll")
+    return getDocumentClass('ChatMessage').create(data)
+
+  }
   async roll() {
     const item = this;
 

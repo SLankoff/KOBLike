@@ -1,3 +1,5 @@
+import { KOBLIKE } from '../helpers/config.mjs';
+import { skillDialogClass } from '../helpers/skilldialog.mjs';
 /**
  * Extend the base Actor document by defining a custom roll data structure which is ideal for the Simple system.
  * @extends {Actor}
@@ -41,6 +43,37 @@ export class koblikeActor extends Actor {
   getRollData() {
     return { ...this.system.getRollData?.() ?? null };
     //Blanking this out for now, as my usage of this is primitive in scope
+  }
+  /*async rollInitiative(options) {
+    //This needs unfucking...
+    if (options && options.hardRoll) {
+    let combat = await super.rollInitiative({createCombatants:true})
+    console.log('init1 - combatant add')
+    let combatant
+    if (this.isToken) {
+      combatant = combat.getCombatantByToken(this.id)
+    }
+    else {
+      combatant = combat.getCombatantByActor(this.id)
+    }
+    await combat.rollInitiative([combatant.id], {...options})
+    console.log('init 2, formula passed')
+  }
+  else {
+    super.rollInitiative({createCombatants:true})
+  }
+  }*/
+
+  async rollSkill(skill, options) {
+    //Okay so this is here now; wanna make a prompt for a situational bonus and possibly advantage tracking, and also throw a hook that can return false
+    let n = this.system.skills[skill].value
+    let formula = KOBLIKE.skillLevels[n]
+  const canProceed = Hooks.call('koblikeSkillCheck', skill, formula, this);
+  if (canProceed) return new skillDialogClass({
+    skill: {value: skill, pretty:game.settings.get('koblike', 'skillsList')[skill], color:this.system.skills[skill].color}, 
+    formula: formula, 
+    actor: this, 
+    bonus: this.system.skills[skill].bonus}).render(true)
   }
 
 }

@@ -1,0 +1,27 @@
+    <form>
+<h2>Rolling <span {{#if skill.color}} style="color:{{skill.color}}"{{/if}}>{{skill.pretty}}</span></h2>
+<div class="skills-list flexcol">
+<label for="display-value">Base Formula:</label>
+<input type="text" disabled="true" class="display-value" name="basevalue" placeholder="{{formula}} {{#if (gt bonus 0)}}+ {{bonus}}{{/if}}"/>
+<br>
+<label for="bonus-value">Situational Bonus:</label>
+<input type="text" class="bonus-value" name="bonusvalue" placeholder="+2, +1d4 etc..."/>
+{{#if initiative }}
+<label for="isInitiative">Initiative Roll?</label>
+<input type="checkbox" class="initiative-value" name="isInitiative"/>
+{{/if}}
+</div>
+
+
+<footer class="sheet-footer flexrow">
+    <button type="submit" name="adv">
+        <i class="fa-solid fa-dice-d20" style="color:green"></i> Advantage
+    </button>
+    <button type="submit" name="normal">
+        <i class="fa fa-check"></i> Normal
+    </button>
+        <button type="submit" name="dis">
+        <i class="fa-solid fa-dice-d20" style="color:red"></i> Disadvantage
+    </button>
+  </footer>
+</form>

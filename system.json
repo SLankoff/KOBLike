@@ -19,10 +19,10 @@
       "thumbnail": "systems/koblike/assets/anvil-impact.png"
     }
   ],
-  "version": "0.1",
+  "version": "0.2A",
   "compatibility": {
     "minimum": 12,
-    "verified": "12.330"
+    "verified": "12.331"
   },
   "esmodules": ["module/koblike.mjs"],
   "styles": ["css/koblike.css"],

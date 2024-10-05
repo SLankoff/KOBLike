@@ -1,0 +1,18 @@
+          <div class="skills flexcol">
+            <h2>Skills <i class="fa-solid fa-gear rollable config-skills"></i></h2>
+            {{#each system.skills as |skill key|}}
+            
+            <div class="skill flexrow flex-group-center" {{#if skill.color}} style="color:{{skill.color}}"{{/if}}>
+              <label for="system.skills.{{key}}.value" class="resource-label rollable flexlarge align-left" data-roll="{{key}}" title="{{lookup ../config.skills key }}" data-label="{{lookup ../config.skills key }}">{{lookup ../config.skills key }} {{#if (eq ../config.initiative key) }} <i class="fa-duotone fa-solid fa-swords"></i>{{/if}} </label>
+              {{diePicker name=(concat "system.skills." key ".value" ) value=skill.value min=1 max=6 step=1}}
+              <div class='item-image'>
+            <a class='rollable' data-roll="{{key}}" data-label="{{lookup ../config.skills key }}"><i
+            class="icon-{{lookup ../config.levels skill.value}}"
+                title='{{lookup ../config.levels skill.value}}'
+                style="font-size:33px;"
+              ></i></a>
+          </div>
+              
+            </div>
+            {{/each}}
+          </div>

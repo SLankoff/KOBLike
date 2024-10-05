@@ -1,0 +1,16 @@
+    <form>
+<h2>Skill Color Customization</h2>
+<div class="skills-list flexcol">
+{{#each skills as |skill key|}}
+<div class="skill {{key}} flexrow form-group">
+    <label for="{{key}}"><h3>{{lookup ../config key}}</h3></label>
+    <color-picker name="{{key}}" value="{{skill.color}}"></color-picker>
+</div>
+{{/each}}
+</div>
+<footer class="sheet-footer flexrow"></footer>
+    <button type="submit" name="submit">
+        <i class="fa fa-check"></i> OK
+    </button>
+  </footer>
+</form>

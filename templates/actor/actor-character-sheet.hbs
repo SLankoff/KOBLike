@@ -23,7 +23,8 @@
         <div class="resource flex-group-center">
           <label for="system.adversity.value" class="resource-label">{{config.adversity}}</label>
           <div class="resource-content flexrow flex-center flex-between">
-          <input type="text" name="system.adversity.value" value="{{system.adversity.value}}" data-dtype="Number"/>
+            {{numberInput system.adversity.value name="system.adversity.value" step=1 min=0 placeholder=0 title=config.adversity }}
+          {{!-- <input type="text" name="system.adversity.value" value="{{system.adversity.value}}" data-dtype="Number"/> --}}
           </div>
         </div>
 {{!--
@@ -41,8 +42,7 @@
   {{!-- Sheet Tab Navigation --}}
   <nav class="sheet-tabs tabs" data-group="primary">
     {{!-- Default tab is specified in actor-sheet.mjs --}}
-    <a class="item" data-tab="features">Features</a>
-   <a class="item" data-tab="items">Items</a>
+    <a class="item" data-tab="features">Main</a>
    {{!-- <a class="item" data-tab="spells">items</a> --}}
    <a class="item" data-tab="description">Biography</a>
     <a class="item" data-tab="effects">Effects</a>
@@ -55,44 +55,12 @@
     <div class="tab features" data-group="primary" data-tab="features">
       <section class="grid grid-3col">
         <aside class="sidebar">
-
-          {{!-- The grid classes are defined in scss/global/_grid.scss. To use,
-          use both the "grid" and "grid-Ncol" class where "N" can be any number
-          from 1 to 12 and will create that number of columns.  --}}
-          {{!-- <div class="abilities flexcol">
-            {{#each system.abilities as |ability key|}}
-            <div class="ability flexrow flex-group-center">
-              <label for="system.abilities.{{key}}.value" class="resource-label rollable flexlarge align-left" data-roll="d20+@abilities.{{key}}.mod" data-label="{{ability.label}}">{{ability.label}}</label>
-              <input type="text" name="system.abilities.{{key}}.value" value="{{ability.value}}" data-dtype="Number"/>
-              <span class="ability-mod rollable" data-roll="d20+@abilities.{{key}}.mod" data-label="{{ability.label}}">{{numberFormat ability.mod decimals=0 sign=true}}</span>
-            </div>
-            {{/each}}
-          </div>
-          --}}
-          <div class="skills flexcol">
-            {{#each system.skills as |skill key|}}
-            
-            <div class="skill flexrow flex-group-center">
-              <label for="system.skills.{{key}}.value" class="resource-label rollable flexlarge align-left" data-roll="{{key}}" title="{{lookup ../config.skills key }}" data-label="{{lookup ../config.skills key }}">{{lookup ../config.skills key }}</label>
-              {{diePicker name=(concat "system.skills." key ".value" ) value=skill.value min=1 max=6 step=1}}
-              <div class='item-image'>
-            <a class='rollable' data-roll="{{key}}" data-label="{{lookup ../config.skills key }}"><img
-               src='systems/koblike/assets/icons/{{lookup ../config.levels skill.value}}.svg'
-                title='{{lookup ../config.levels skill.value}}'
-                width='30'
-                height='30'
-              /></a>
-          </div>
-              
-            </div>
-            {{/each}}
-          </div>
+          {{> "systems/koblike/templates/actor/parts/actor-skills.hbs"}}
         </aside>
-
         {{!-- For the main features list, span the right two columns --}}
         <section class="main grid-span-2">
           {{!-- This is a Handlebars partial. They're stored in the `/parts` folder next to this sheet, and defined in module/helpers/templates.mjs --}}
-          {{> "systems/koblike/templates/actor/parts/actor-features.hbs"}}
+          {{> "systems/koblike/templates/actor/parts/actor-items.hbs"}}
         </section>
 
       </section>
@@ -104,10 +72,6 @@
       {{editor system.biography target="system.biography" rollData=rollData button=true owner=owner editable=editable}}
     </div>
 
-    {{!-- Owned Items Tab --}}
-    <div class="tab items" data-group="primary" data-tab="items">
-       {{> "systems/koblike/templates/actor/parts/actor-items.hbs"}}
-    </div>
 
     {{!-- Owned Spells Tab 
     <div class="tab spells" data-group="primary" data-tab="spells">

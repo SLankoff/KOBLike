@@ -10,7 +10,9 @@ export default class koblikeActorBase extends foundry.abstract.TypeDataModel {
       /*value: new fields.StringField({
         required: true,  initial: "1d4x"
       })*/
-        value: new fields.NumberField({ ...requiredInteger, initial: 1, min: 1, max: 6 })
+        value: new fields.NumberField({ ...requiredInteger, initial: 1, min: 1, max: 6 }),
+        color: new fields.StringField({required:true, blank:true}),
+        bonus: new fields.NumberField({ ...requiredInteger, initial: 0}),
     }), {
       initialKeys: game.settings.get('koblike', 'skillsList'),
       initialKeysOnly: true

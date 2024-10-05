@@ -17,7 +17,10 @@ export default class koblikeNPC extends koblikeActorBase {
 //Push skills to the top, specifically for initiative
     if (this.skills) {
       for (let [k,v] of Object.entries(this.skills)) {
-        data[k] = `${CONFIG.KOBLIKE.skillLevels[v.value]}x`
+        data[k] =  {
+          value:`${CONFIG.KOBLIKE.skillLevels[v.value]}x`,
+          bonus: v.bonus
+      }
       }
     }
     return data
