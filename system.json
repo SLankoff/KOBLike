@@ -19,7 +19,7 @@
       "thumbnail": "systems/koblike/assets/anvil-impact.png"
     }
   ],
-  "version": "0.2A",
+  "version": "0.2.1A",
   "compatibility": {
     "minimum": 12,
     "verified": "12.331"

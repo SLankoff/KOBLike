@@ -11,3 +11,7 @@ Automated Adversity on Realtime messages (toggleable)
 Stretch: Configurable dice scale menu
 Hooks on card shows
 Iron out stuff I did badly (exploding dice?)
+Enrich HTML
+Read Item Subtypes on creation
+_expand on sheets should be client side somehow
+force dice so nice roll order
